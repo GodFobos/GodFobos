@@ -120,10 +120,16 @@ def build():
         f'<polygon class="cone" points="{px-6},{py} {px+6},{py} {cx0+cw-30:.0f},{cy0+ch-6:.0f} {cx0+30:.0f},{cy0+ch-6:.0f}" fill="url(#cone)"/>'
         f'<rect x="{px-16}" y="{py}" width="32" height="8" fill="#0b0b14" stroke="{CYAN}" stroke-opacity=".8"/>'
         f'<circle cx="{px}" cy="{py}" r="3" fill="{CYAN}" class="blink b4" filter="url(#g-c)"/>'
-        f'<g class="holo"><g filter="url(#holo-f)">'
-        f'<image x="{cx0:.0f}" y="{cy0}" width="{cw}" height="{ch:.0f}" href="data:image/jpeg;base64,{data}"/></g>'
-        f'<g class="hglitch"><g filter="url(#holo-f2)"><image x="{cx0:.0f}" y="{cy0}" width="{cw}" height="{ch:.0f}" '
-        f'href="data:image/jpeg;base64,{data}"/></g></g></g>'
+        f'<defs><image id="crw" x="{cx0:.0f}" y="{cy0}" width="{cw}" height="{ch:.0f}" href="data:image/jpeg;base64,{data}"/>'
+        f'<mask id="crm" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}"><g class="spin"><use href="#crw"/></g></mask>'
+        f'<linearGradient id="spinsheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
+        f'<stop offset=".5" stop-color="#eaffff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>'
+        f'<g class="holo">'
+        f'<g class="spin"><g filter="url(#holo-f)"><use href="#crw"/></g>'
+        f'<g class="hglitch"><g filter="url(#holo-f2)"><use href="#crw"/></g></g></g>'
+        # a band of light crossing the turning crown from right to left
+        f'<g mask="url(#crm)"><rect class="rsheen" x="{cx0 + cw:.0f}" y="{cy0}" width="70" height="{ch:.0f}" fill="url(#spinsheen)"/></g>'
+        f'</g>'
         + T("WHITEKING.HOLO", 960, cy0 + ch + 22, "sharetechmono", 13, CYAN, 2, "middle", 'opacity=".75" class="holo"')
     )
 
@@ -159,9 +165,7 @@ def build():
         + f'<rect x="{nx}" y="{ny+16}" width="{nw:.0f}" height="2" fill="{YELLOW}" opacity=".35"/>'
         # the motto as a white neon sign
         + f'<g class="neon">' + T(motto, nx, ny + 54, "orbitron-900", 30, WHITE_ICE, 4, extra='filter="url(#g-w)"') + '</g>'
-        + f'<clipPath id="tagclip"><rect class="typer" x="{nx-4}" y="{ny+68}" width="{tw+14:.0f}" height="36"/></clipPath>'
-        + f'<g clip-path="url(#tagclip)">' + T(tag, nx, ny + 94, "rajdhani-700", 24, CYAN, 3, extra='filter="url(#g-c)"') + '</g>'
-        + f'<rect class="caret" x="{nx}" y="{ny+74}" width="12" height="24" fill="{CYAN}"/>'
+        + T(tag, nx, ny + 94, "rajdhani-700", 24, CYAN, 3, extra='filter="url(#g-c)"')
     )
 
     # HUD bits
@@ -188,6 +192,9 @@ def build():
     .holo{animation:holo 3s ease-in-out infinite}
     .neon{animation:neon 5s infinite}@keyframes neon{0%,40%,43%,46%,100%{opacity:1}41%,45%{opacity:.25}}
     .cone{animation:cone 3s ease-in-out infinite}@keyframes cone{0%,100%{opacity:.7}50%{opacity:1}}
+    .spin{transform-box:view-box;transform-origin:960px 150px;animation:spin 9s linear infinite}
+    @keyframes spin{0.00%{transform:scaleX(1.000)}4.17%{transform:scaleX(0.966)}8.33%{transform:scaleX(0.866)}12.50%{transform:scaleX(0.707)}16.67%{transform:scaleX(0.500)}20.83%{transform:scaleX(0.259)}25.00%{transform:scaleX(0.000)}29.17%{transform:scaleX(-0.259)}33.33%{transform:scaleX(-0.500)}37.50%{transform:scaleX(-0.707)}41.67%{transform:scaleX(-0.866)}45.83%{transform:scaleX(-0.966)}50.00%{transform:scaleX(-1.000)}54.17%{transform:scaleX(-0.966)}58.33%{transform:scaleX(-0.866)}62.50%{transform:scaleX(-0.707)}66.67%{transform:scaleX(-0.500)}70.83%{transform:scaleX(-0.259)}75.00%{transform:scaleX(-0.000)}79.17%{transform:scaleX(0.259)}83.33%{transform:scaleX(0.500)}87.50%{transform:scaleX(0.707)}91.67%{transform:scaleX(0.866)}95.83%{transform:scaleX(0.966)}100.00%{transform:scaleX(1.000)}}
+    .rsheen{animation:rsheen 4.5s linear infinite}@keyframes rsheen{from{transform:translateX(0)}to{transform:translateX(-340px)}}
     .hglitch{opacity:0;animation:hg 4.5s steps(1) infinite;mix-blend-mode:screen}
     @keyframes hg{0%,84%,100%{opacity:0;transform:none}85%{opacity:.8;transform:translate(-6px,0);clip-path:inset(20% 0 55% 0)}
       87%{opacity:.8;transform:translate(5px,0);clip-path:inset(60% 0 15% 0)}89%{opacity:0}}
