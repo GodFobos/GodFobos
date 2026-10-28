@@ -57,35 +57,25 @@ Goal: find a real bug and report it through responsible disclosure.
 <a name="stack"></a>
 <img src="./assets/section-stack.svg" width="100%" alt="03 Stack" />
 
-**AppSec** &nbsp;
-![OWASP Top 10](https://img.shields.io/badge/OWASP_Top_10-0d0d18?style=for-the-badge&logo=owasp&logoColor=white)
-![Burp Suite](https://img.shields.io/badge/Burp_Suite-0d0d18?style=for-the-badge&logo=burpsuite&logoColor=FF6633)
-![OWASP ZAP](https://img.shields.io/badge/OWASP_ZAP-0d0d18?style=for-the-badge&logo=zap&logoColor=00f0ff)
-![PortSwigger Academy](https://img.shields.io/badge/PortSwigger_Academy-0d0d18?style=for-the-badge)
-![SAST / DAST](https://img.shields.io/badge/SAST_%2F_DAST-0d0d18?style=for-the-badge)
-![REST API security](https://img.shields.io/badge/REST_API_security-0d0d18?style=for-the-badge&logo=swagger&logoColor=85EA2D)
+<p>
+  <sub><b>APPSEC</b></sub><br/>
+  <img src="https://img.shields.io/badge/OWASP_Top_10-0d0d18?style=for-the-badge&logo=owasp&logoColor=white" alt="OWASP Top 10" height="28"/> <img src="https://img.shields.io/badge/Burp_Suite-0d0d18?style=for-the-badge&logo=burpsuite&logoColor=FF6633" alt="Burp Suite" height="28"/> <img src="https://img.shields.io/badge/OWASP_ZAP-0d0d18?style=for-the-badge&logo=zap&logoColor=00f0ff" alt="OWASP ZAP" height="28"/> <img src="https://img.shields.io/badge/PortSwigger_Academy-0d0d18?style=for-the-badge" alt="PortSwigger Academy" height="28"/> <img src="https://img.shields.io/badge/SAST_%2F_DAST-0d0d18?style=for-the-badge" alt="SAST / DAST" height="28"/> <img src="https://img.shields.io/badge/REST_API_security-0d0d18?style=for-the-badge&logo=swagger&logoColor=85EA2D" alt="REST API security" height="28"/>
+</p>
 
-**DevSecOps** &nbsp;
-![Docker](https://img.shields.io/badge/Docker-0d0d18?style=for-the-badge&logo=docker&logoColor=00f0ff)
-![Linux](https://img.shields.io/badge/Linux-0d0d18?style=for-the-badge&logo=linux&logoColor=fcee0a)
-![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-0d0d18?style=for-the-badge&logo=githubactions&logoColor=white)
-![CI/CD](https://img.shields.io/badge/CI%2FCD-0d0d18?style=for-the-badge)
-![Container security](https://img.shields.io/badge/Container_security-0d0d18?style=for-the-badge&logo=docker&logoColor=ff2bd6)
-![Git](https://img.shields.io/badge/Git-0d0d18?style=for-the-badge&logo=git&logoColor=FF6633)
+<p>
+  <sub><b>DEVSECOPS</b></sub><br/>
+  <img src="https://img.shields.io/badge/Docker-0d0d18?style=for-the-badge&logo=docker&logoColor=00f0ff" alt="Docker" height="28"/> <img src="https://img.shields.io/badge/Linux-0d0d18?style=for-the-badge&logo=linux&logoColor=fcee0a" alt="Linux" height="28"/> <img src="https://img.shields.io/badge/GitHub_Actions-0d0d18?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions" height="28"/> <img src="https://img.shields.io/badge/CI%2FCD-0d0d18?style=for-the-badge" alt="CI/CD" height="28"/> <img src="https://img.shields.io/badge/Container_security-0d0d18?style=for-the-badge&logo=docker&logoColor=ff2bd6" alt="Container security" height="28"/> <img src="https://img.shields.io/badge/Git-0d0d18?style=for-the-badge&logo=git&logoColor=FF6633" alt="Git" height="28"/>
+</p>
 
-**Detection & Response** &nbsp;
-![SIEM · ELK](https://img.shields.io/badge/SIEM_%C2%B7_ELK-0d0d18?style=for-the-badge&logo=elastic&logoColor=fcee0a)
-![OpenSearch](https://img.shields.io/badge/OpenSearch-0d0d18?style=for-the-badge&logo=opensearch&logoColor=00f0ff)
-![Zeek](https://img.shields.io/badge/Zeek-0d0d18?style=for-the-badge)
-![Vulnerability management](https://img.shields.io/badge/Vulnerability_management-0d0d18?style=for-the-badge)
-![YARA](https://img.shields.io/badge/YARA-0d0d18?style=for-the-badge)
+<p>
+  <sub><b>DETECTION & RESPONSE</b></sub><br/>
+  <img src="https://img.shields.io/badge/SIEM_%C2%B7_ELK-0d0d18?style=for-the-badge&logo=elastic&logoColor=fcee0a" alt="SIEM · ELK" height="28"/> <img src="https://img.shields.io/badge/OpenSearch-0d0d18?style=for-the-badge&logo=opensearch&logoColor=00f0ff" alt="OpenSearch" height="28"/> <img src="https://img.shields.io/badge/Zeek-0d0d18?style=for-the-badge" alt="Zeek" height="28"/> <img src="https://img.shields.io/badge/Vulnerability_management-0d0d18?style=for-the-badge" alt="Vulnerability management" height="28"/> <img src="https://img.shields.io/badge/YARA-0d0d18?style=for-the-badge" alt="YARA" height="28"/>
+</p>
 
-**Code & Research** &nbsp;
-![Python](https://img.shields.io/badge/Python-0d0d18?style=for-the-badge&logo=python&logoColor=fcee0a)
-![SQL](https://img.shields.io/badge/SQL-0d0d18?style=for-the-badge&logo=microsoftsqlserver&logoColor=00f0ff)
-![C](https://img.shields.io/badge/C-0d0d18?style=for-the-badge&logo=c&logoColor=00f0ff)
-![libFuzzer + ASan](https://img.shields.io/badge/libFuzzer_%2B_ASan-0d0d18?style=for-the-badge&logo=llvm&logoColor=ff2bd6)
-![LLM × AppSec](https://img.shields.io/badge/LLM_%C3%97_AppSec-0d0d18?style=for-the-badge&logo=openai&logoColor=white)
+<p>
+  <sub><b>CODE & RESEARCH</b></sub><br/>
+  <img src="https://img.shields.io/badge/Python-0d0d18?style=for-the-badge&logo=python&logoColor=fcee0a" alt="Python" height="28"/> <img src="https://img.shields.io/badge/SQL-0d0d18?style=for-the-badge&logo=microsoftsqlserver&logoColor=00f0ff" alt="SQL" height="28"/> <img src="https://img.shields.io/badge/C-0d0d18?style=for-the-badge&logo=c&logoColor=00f0ff" alt="C" height="28"/> <img src="https://img.shields.io/badge/libFuzzer_%2B_ASan-0d0d18?style=for-the-badge&logo=llvm&logoColor=ff2bd6" alt="libFuzzer + ASan" height="28"/> <img src="https://img.shields.io/badge/LLM_%C3%97_AppSec-0d0d18?style=for-the-badge&logo=openai&logoColor=white" alt="LLM × AppSec" height="28"/>
+</p>
 
 <br/>
 
