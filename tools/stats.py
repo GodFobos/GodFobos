@@ -125,7 +125,7 @@ def render(data, is_demo=False):
     weeks = weeks_last_year(data["days"])
     active_days = sum(1 for v in list(data["days"].values()) if v > 0)
     cid = "sc"
-    defs = ("<defs>" + panel_clip(cid, W, H, 28)
+    defs = ("<defs>" + panel_clip(cid, W, H, 0)
             + glow_filter("gy", YELLOW, 6, 1) + glow_filter("gc", CYAN, 3, 2) + glow_filter("gm", MAGENTA, 3, 1)
             + '<pattern id="sl" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="#000" opacity=".3"/></pattern>'
             + f'<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{BG}"/>'
@@ -237,15 +237,14 @@ def render(data, is_demo=False):
     .tw{animation:tw 6s steps(1) infinite}@keyframes tw{0%,80%{opacity:.9}81%,100%{opacity:.05}}
     .beam{animation:beam 6s ease-in-out infinite}@keyframes beam{0%{transform:translateX(0)}70%,100%{transform:translateX(460px)}}
     .bar{transform-box:fill-box;transform-origin:0 50%;animation:bar 1.4s ease-out both}@keyframes bar{from{transform:scaleX(0)}}
-    .num{animation:num 3s steps(1) infinite}@keyframes num{0%,92%{opacity:1}93%{opacity:.3}95%{opacity:1}96%{opacity:.4}97%,100%{opacity:1}}
+    .num{animation:none}@keyframes num{0%,92%{opacity:1}93%{opacity:.3}95%{opacity:1}96%{opacity:.4}97%,100%{opacity:1}}
     @media (prefers-reduced-motion:reduce){*{animation:none!important}}
     """
     body = (defs + f'<g clip-path="url(#{cid})"><rect width="{W}" height="{H}" fill="{BG2}"/>'
             + title + gauge + stats_col + "".join(city) + "".join(lang_rows) + watermark
-            + f'<rect width="{W}" height="{H}" fill="url(#sl)"/></g>'
-            + frame(W, H, YELLOW, 28, extra='stroke-opacity=".55"')
-            + runner(W, H, YELLOW, 28, sw=3, dur=7, length=200)
-            + f'<rect x="{W-140}" y="0" width="110" height="4" fill="{YELLOW}"/>')
+            + "</g>"
+            + f'<rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="6" fill="none" stroke="{CYAN}" stroke-opacity=".35"/>'
+            + f'<rect x="0" y="0" width="5" height="{H}" fill="{CYAN}"/>')
     return svg(W, H, body, f"GitHub stats: current streak {cur} days, longest {longest} days", style)
 
 

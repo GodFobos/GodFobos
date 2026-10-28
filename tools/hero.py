@@ -6,7 +6,7 @@ from pathlib import Path
 from cyber import (BG, CYAN, DIM, MAGENTA, RED, TEXT, YELLOW, T, glow_filter,
                    svg, text_width)
 
-W, H = 1200, 480
+W, H = 1200, 400
 ART = Path(__file__).resolve().parent.parent / "art" / "crown.jpg"
 rnd = random.Random(2077)
 WHITE_ICE = "#eefcff"
@@ -69,11 +69,11 @@ def build():
     defs = (
         '<defs>'
         '<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">'
-        '<stop offset="0" stop-color="#05050a"/><stop offset=".55" stop-color="#1a0b2e"/>'
-        '<stop offset=".8" stop-color="#3a0d3f"/><stop offset="1" stop-color="#12060f"/></linearGradient>'
+        '<stop offset="0" stop-color="#05050a"/><stop offset=".6" stop-color="#0c0b18"/>'
+        '<stop offset=".9" stop-color="#1a1030"/><stop offset="1" stop-color="#0b0812"/></linearGradient>'
         '<radialGradient id="haze" cx=".72" cy=".78" r=".55">'
-        '<stop offset="0" stop-color="#ff2bd6" stop-opacity=".35"/>'
-        '<stop offset=".5" stop-color="#7a1fff" stop-opacity=".12"/>'
+        '<stop offset="0" stop-color="#00f0ff" stop-opacity=".10"/>'
+        '<stop offset=".5" stop-color="#00f0ff" stop-opacity=".03"/>'
         '<stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>'
         '<linearGradient id="fadeL" x1="0" y1="0" x2="1" y2="0">'
         f'<stop offset="0" stop-color="{BG}" stop-opacity=".97"/>'
@@ -88,7 +88,7 @@ def build():
         + glow_filter("g-m", MAGENTA, 3, 2)
         + glow_filter("g-r", RED, 3, 1)
         + glow_filter("g-w", "#7fe9ff", 5, 2)
-        + '<clipPath id="clipAll"><rect width="1200" height="480"/></clipPath>'
+        + '<clipPath id="clipAll"><rect width="1200" height="400"/></clipPath>'
         # hologram: crown -> cyan light with alpha = brightness
         + '<filter id="holo-f" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">'
           '<feColorMatrix type="matrix" values="0 0 0 0 .55  0 0 0 0 .95  0 0 0 0 1  .9 .9 .9 0 -.18" result="h"/>'
@@ -105,46 +105,31 @@ def build():
     city = (
         f'<rect width="{W}" height="{H}" fill="url(#sky)"/>'
         f'<rect width="{W}" height="{H}" fill="url(#haze)"/>'
-        # searchlights
-        + f'<g opacity=".16"><polygon class="beam bm1" points="760,360 700,-20 760,-20" fill="{CYAN}"/>'
-        f'<polygon class="beam bm2" points="1040,360 1080,-20 1130,-20" fill="{MAGENTA}"/></g>'
-        # megatower
-        + '<g fill="#160d27"><polygon points="790,330 812,40 836,40 858,330"/>'
-        '<rect x="818" y="18" width="12" height="24"/></g>'
-        + f'<rect x="815" y="60" width="18" height="3" fill="{YELLOW}" opacity=".8" class="blink b3"/>'
-        + f'<circle cx="824" cy="16" r="2.4" fill="{RED}" class="blink b1" filter="url(#g-r)"/>'
-        # flying AV
-        + f'<g class="av"><path d="M0 0 L26 -4 L40 0 L26 5 Z" fill="#0b0b14" stroke="{CYAN}" stroke-opacity=".7"/>'
-        f'<circle cx="2" cy="0" r="1.8" fill="{RED}"/><circle cx="38" cy="0" r="1.8" fill="{YELLOW}"/>'
-        f'<line x1="40" y1="0" x2="120" y2="2" stroke="{YELLOW}" stroke-opacity=".25"/></g>'
         # far / mid / near skylines
-        + skyline("far", 330, 0, 20, 46, 60, 170, "#1d1233", 0.10)
-        + skyline("mid", 360, 0, 26, 60, 50, 210, "#120a20", 0.16)
-        + neon_vertical(1162, 168, "24/7", CYAN, 19, "flk2")
-        + skyline("near", 410, 0, 40, 90, 20, 120, "#07040c", 0.05)
+        + skyline("far", 330, 0, 22, 50, 50, 150, "#121024", 0.05)
+        + skyline("near", 400, 0, 40, 90, 20, 110, "#07060c", 0.02)
     )
 
     # hologram of the White King's crown, projected from a rooftop
     data = base64.b64encode(ART.read_bytes()).decode()
-    cw = 290
+    cw = 270
     ch = cw * 910 / 1174
-    cx0, cy0 = 990 - cw / 2, 44
-    px, py = 990, 352                      # projector on the rooftop
+    cx0, cy0 = 960 - cw / 2, 46
+    px, py = 960, 318                      # projector on the rooftop
     holo = (
         f'<polygon class="cone" points="{px-6},{py} {px+6},{py} {cx0+cw-30:.0f},{cy0+ch-6:.0f} {cx0+30:.0f},{cy0+ch-6:.0f}" fill="url(#cone)"/>'
         f'<rect x="{px-16}" y="{py}" width="32" height="8" fill="#0b0b14" stroke="{CYAN}" stroke-opacity=".8"/>'
         f'<circle cx="{px}" cy="{py}" r="3" fill="{CYAN}" class="blink b4" filter="url(#g-c)"/>'
         f'<g class="holo"><g filter="url(#holo-f)">'
         f'<image x="{cx0:.0f}" y="{cy0}" width="{cw}" height="{ch:.0f}" href="data:image/jpeg;base64,{data}"/></g>'
-        f'<rect x="{cx0:.0f}" y="{cy0}" width="{cw}" height="{ch:.0f}" fill="url(#holo-scan)"/>'
         f'<g class="hglitch"><g filter="url(#holo-f2)"><image x="{cx0:.0f}" y="{cy0}" width="{cw}" height="{ch:.0f}" '
         f'href="data:image/jpeg;base64,{data}"/></g></g></g>'
-        + T("WHITEKING.HOLO  //  LIVE", 990, cy0 + ch + 22, "sharetechmono", 13, CYAN, 2, "middle", 'opacity=".75" class="holo"')
+        + T("WHITEKING.HOLO", 960, cy0 + ch + 22, "sharetechmono", 13, CYAN, 2, "middle", 'opacity=".75" class="holo"')
     )
 
     # left text block
     name = "KIRILL ALIMOV"
-    nx, ny, nsize = 56, 196, 66
+    nx, ny, nsize = 64, 186, 62
     name_d = T(name, nx, ny, "orbitron-900", nsize, YELLOW, 3)
     glitch = (
         '<g class="gl gl1">' + T(name, nx, ny, "orbitron-900", nsize, CYAN, 3) + '</g>'
@@ -177,40 +162,16 @@ def build():
         + f'<clipPath id="tagclip"><rect class="typer" x="{nx-4}" y="{ny+68}" width="{tw+14:.0f}" height="36"/></clipPath>'
         + f'<g clip-path="url(#tagclip)">' + T(tag, nx, ny + 94, "rajdhani-700", 24, CYAN, 3, extra='filter="url(#g-c)"') + '</g>'
         + f'<rect class="caret" x="{nx}" y="{ny+74}" width="12" height="24" fill="{CYAN}"/>'
-        # chips: text centred in both axes, clean cut corners
-        + f'<g transform="translate({nx} {cy + 22})">'
-        f'<polygon points="0,0 {c1w:.0f},0 {c1w:.0f},32 10,32 0,22" fill="#0b0b14" stroke="{TEXT}" stroke-opacity=".5"/>'
-        + T(chip1, c1w / 2 + 2, 21.5, "rajdhani-700", 15, TEXT, 1.5, "middle")
-        + '</g>'
-        + f'<g transform="translate({nx + c1w + 14} {cy + 22})">'
-        f'<polygon points="0,0 {c2w:.0f},0 {c2w:.0f},22 {c2w-10:.0f},32 0,32" fill="#0d1a0d" stroke="#39ff6a" stroke-opacity=".8"/>'
-        f'<circle cx="17" cy="16" r="4.5" fill="#39ff6a" class="blink b1"/>'
-        + T(chip2, 30 + (c2w - 30) / 2 - 2, 21.5, "rajdhani-700", 15, "#39ff6a", 1.5, "middle")
-        + '</g>'
     )
 
     # HUD bits
     hud = (
-        # corner brackets
-        f'<path d="M14 40 V14 H40" fill="none" stroke="{YELLOW}" stroke-width="3"/>'
-        f'<path d="M{W-40} 14 H{W-14} V40" fill="none" stroke="{YELLOW}" stroke-width="3"/>'
-        # top right readout
-        + T("SYS 2.0.77", W - 56, 36, "sharetechmono", 14, YELLOW, 1, "end")
-        + T("NET: SECURE", W - 56, 54, "sharetechmono", 14, DIM, 1, "end")
-        # bottom bar
-        + f'<rect x="0" y="{H-34}" width="{W}" height="34" fill="#0a0a0f"/>'
-        f'<rect x="0" y="{H-34}" width="{W}" height="2" fill="{YELLOW}"/>'
-        f'<rect x="0" y="{H-32}" width="150" height="32" fill="url(#hazard)" opacity=".9"/>'
-        f'<rect x="{W-150}" y="{H-32}" width="150" height="32" fill="url(#hazard)" opacity=".9"/>'
-        + T("BUILD  >  BREAK  >  FIX  >  REPEAT", W / 2, H - 11, "rajdhani-700", 16, YELLOW, 4, "middle")
-        + f'<g class="type">' + T("> jack-in --as=whiteking", 170, H - 11, "sharetechmono", 14, DIM)
-        + '</g>'
+        f'<path d="M18 46 V18 H46" fill="none" stroke="{YELLOW}" stroke-width="2" opacity=".8"/>'
+        f'<path d="M{W-46} {H-18} H{W-18} V{H-46}" fill="none" stroke="{YELLOW}" stroke-width="2" opacity=".8"/>'
     )
 
     fx = (
-        f'<rect width="{W}" height="{H}" fill="url(#scan)" pointer-events="none"/>'
-        # sweeping glitch slice
-        f'<rect class="slice" x="0" y="0" width="{W}" height="6" fill="{CYAN}" opacity=".08"/>'
+        f'<rect width="{W}" height="{H}" fill="url(#scan)" opacity=".5" pointer-events="none"/>'
     )
 
     style = """
@@ -232,7 +193,7 @@ def build():
       87%{opacity:.8;transform:translate(5px,0);clip-path:inset(60% 0 15% 0)}89%{opacity:0}}
     @keyframes holo{0%,100%{opacity:.9}50%{opacity:.6}93%{opacity:.9}95%{opacity:.2}97%{opacity:.85}}
     .gl{opacity:0;mix-blend-mode:screen}
-    .gl1{animation:g1 3.2s infinite}.gl2{animation:g2 3.2s infinite}
+    .gl1{animation:g1 7s infinite}.gl2{animation:g2 7s infinite}
     @keyframes g1{0%,86%,100%{opacity:0;transform:none}
       87%{opacity:.9;transform:translate(-5px,0);clip-path:inset(10% 0 55% 0)}
       89%{opacity:.9;transform:translate(4px,0);clip-path:inset(60% 0 10% 0)}
@@ -279,8 +240,8 @@ def build():
         f'<rect x="0" y="{y}" width="{W}" height="2" fill="{CYAN if i % 2 else RED}"/></g></g>'
         for i, (y, h, cls) in enumerate(bands))
     flash = f'<rect class="flash" width="{W}" height="{H}" fill="{CYAN}"/>'
-    scene = '<g id="scene">' + city + holo + rain(170) + left + hud + '</g>'
-    body = defs + '<g clip-path="url(#clipAll)">' + scene + tears + flash + fx + "</g>"
+    scene = '<g id="scene">' + city + holo + left + hud + '</g>'
+    body = defs + '<g clip-path="url(#clipAll)">' + scene + fx + "</g>"
     return svg(W, H, body, "Kirill Alimov, netrunner WhiteKing - I\'m the only king. AppSec / DevSecOps", style)
 
 
