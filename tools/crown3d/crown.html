@@ -1,0 +1,139 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}</style></head>
+<body>
+<script type="module">
+import * as THREE from './three.module.js';
+
+const W = 640, H = 500;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(W, H);
+renderer.setClearColor(0x000000, 0);
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, W / H, 0.1, 50);
+camera.position.set(0, 1.25, 5.6);
+camera.lookAt(0, 0.62, 0);
+
+const crown = new THREE.Group();
+scene.add(crown);
+
+const EDGE = 0x8ff0ff, EDGE_HI = 0xeaffff, FILL = 0x0b6b86;
+
+function holo(geo, { edge = EDGE, fill = FILL, fillOp = 0.22, thresh = 18, lineOp = 0.95 } = {}) {
+  const g = new THREE.Group();
+  const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+    color: fill, transparent: true, opacity: fillOp, depthWrite: true, side: THREE.DoubleSide,
+    polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }));
+  const l = new THREE.LineSegments(new THREE.EdgesGeometry(geo, thresh),
+    new THREE.LineBasicMaterial({ color: edge, transparent: true, opacity: lineOp }));
+  g.add(m, l);
+  return g;
+}
+
+// ---- band: a bevelled ring
+const R = 1.0, BH = 0.34;
+const prof = [[R - 0.06, 0], [R + 0.01, 0], [R + 0.035, 0.03], [R + 0.035, 0.11], [R + 0.05, 0.13], [R + 0.05, 0.21],
+              [R + 0.035, 0.23], [R + 0.035, BH - 0.03], [R + 0.01, BH], [R - 0.06, BH]].map(([x, y]) => new THREE.Vector2(x, y));
+crown.add(holo(new THREE.LatheGeometry(prof, 72), { thresh: 30 }));
+
+// ---- spikes: stem that narrows, then a marquise "kite" with a stone in it
+function spikeShape(w, h) {
+  const s = new THREE.Shape();
+  s.moveTo(-w, 0);
+  s.bezierCurveTo(-w * 0.55, h * 0.18, -w * 0.18, h * 0.42, -w * 0.22, h * 0.58);  // stem in
+  s.lineTo(-w * 0.62, h * 0.76);                                                  // kite left
+  s.lineTo(0, h);                                                                 // tip
+  s.lineTo(w * 0.62, h * 0.76);
+  s.lineTo(w * 0.22, h * 0.58);
+  s.bezierCurveTo(w * 0.18, h * 0.42, w * 0.55, h * 0.18, w, 0);
+  s.lineTo(-w, 0);
+  return s;
+}
+function gem(rx, ry, rz) {
+  const g = new THREE.OctahedronGeometry(1, 0);
+  g.scale(rx, ry, rz);
+  return g;
+}
+const N = 10;
+for (let i = 0; i < N; i++) {
+  const tall = i % 2 === 0;
+  const front = false;
+  const h = front ? 1.05 : tall ? 0.82 : 0.48;
+  const w = tall ? 0.3 : 0.18;
+  const geo = new THREE.ExtrudeGeometry(spikeShape(w, h), { depth: 0.035, bevelEnabled: true, bevelSize: 0.012, bevelThickness: 0.012, bevelSegments: 1, curveSegments: 10 });
+  geo.translate(0, 0, -0.0175);
+  const sp = holo(geo, { thresh: 25 });
+  const a = i / N * Math.PI * 2;
+  const holder = new THREE.Group();
+  holder.rotation.y = a;
+  sp.position.set(0, BH - 0.02, R + 0.02);
+  sp.rotation.x = -0.12;                    // flare slightly outward
+  holder.add(sp);
+  // stone in the kite + glint stone at the tip
+  const st = holo(gem(w * 0.36, h * 0.13, 0.03), { edge: EDGE_HI, fill: 0x9ff4ff, fillOp: 0.35, thresh: 1 });
+  st.position.set(0, h * 0.77, 0.04);
+  sp.add(st);
+  if (tall) {
+    const tip = holo(gem(0.035, 0.06, 0.035), { edge: EDGE_HI, fill: 0xbffaff, fillOp: 0.5, thresh: 1 });
+    tip.position.set(0, h + 0.07, 0);
+    sp.add(tip);
+  }
+  crown.add(holder);
+}
+
+// ---- U-shaped arches linking neighbouring spikes, set with small stones
+for (let i = 0; i < N; i++) {
+  const a0 = i / N * Math.PI * 2, a1 = (i + 1) / N * Math.PI * 2, am = (a0 + a1) / 2;
+  const rr = R + 0.03;
+  const P = (a, y) => new THREE.Vector3(Math.sin(a) * rr, y, Math.cos(a) * rr);
+  const tall0 = i % 2 === 0;
+  const y0 = BH + (tall0 ? 0.42 : 0.26), y1 = BH + (tall0 ? 0.26 : 0.42);
+  const curve = new THREE.CatmullRomCurve3([P(a0 + 0.02, y0), P(a0 + (am - a0) * 0.55, BH + 0.12), P(am, BH + 0.05),
+                                             P(a1 - (a1 - am) * 0.55, BH + 0.12), P(a1 - 0.02, y1)]);
+  crown.add(holo(new THREE.TubeGeometry(curve, 24, 0.018, 6, false), { thresh: 40, fillOp: 0.3 }));
+  for (let k = 1; k < 6; k++) {
+    const q = curve.getPoint(k / 6);
+    const d = new THREE.Points(new THREE.BufferGeometry().setFromPoints([q.clone().multiplyScalar(1.0)]),
+      new THREE.PointsMaterial({ color: EDGE_HI, size: 3, sizeAttenuation: false }));
+    crown.add(d);
+  }
+}
+
+// ---- stones around the band
+for (let i = 0; i < 20; i++) {
+  const a = i / 20 * Math.PI * 2;
+  const s = holo(gem(0.05, 0.05, 0.02), { edge: EDGE_HI, fill: 0x9ff4ff, fillOp: 0.3, thresh: 1 });
+  const g = new THREE.Group(); g.rotation.y = a;
+  s.position.set(0, BH * 0.5, R + 0.06); s.rotation.z = Math.PI / 4;
+  g.add(s); crown.add(g);
+}
+// pavé rows (points)
+for (const y of [0.06, BH - 0.06]) {
+  const pts = [];
+  for (let i = 0; i < 70; i++) { const a = i / 70 * Math.PI * 2; pts.push(Math.sin(a) * (R + 0.04), y, Math.cos(a) * (R + 0.04)); }
+  const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  crown.add(new THREE.Points(pg, new THREE.PointsMaterial({ color: EDGE_HI, size: 3, sizeAttenuation: false })));
+}
+// ---- five brilliants on the band, one under each tall spike (keeps 72-degree symmetry)
+for (let k = 0; k < 5; k++) {
+  const big = new THREE.Group();
+  const cp = new THREE.CylinderGeometry(0.05, 0.095, 0.04, 12, 1);
+  const pv = new THREE.ConeGeometry(0.095, 0.09, 12, 1); pv.rotateX(Math.PI); pv.translate(0, -0.065, 0);
+  big.add(holo(cp, { edge: EDGE_HI, fill: 0xbffaff, fillOp: 0.45, thresh: 1 }));
+  big.add(holo(pv, { edge: EDGE_HI, fill: 0xbffaff, fillOp: 0.45, thresh: 1 }));
+  big.rotation.x = Math.PI / 2; big.position.set(0, BH * 0.5, R + 0.08);
+  const g = new THREE.Group(); g.rotation.y = k / 5 * Math.PI * 2; g.add(big); crown.add(g);
+}
+
+crown.position.y = 0.08;
+
+window.renderFrame = (angle) => {
+  crown.rotation.y = angle;
+  renderer.render(scene, camera);
+  return renderer.domElement.toDataURL('image/png');
+};
+window.ready = true;
+</script>
+</body></html>

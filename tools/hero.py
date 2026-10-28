@@ -7,7 +7,7 @@ from cyber import (BG, CYAN, DIM, MAGENTA, RED, TEXT, YELLOW, T, glow_filter,
                    svg, text_width)
 
 W, H = 1200, 400
-ART = Path(__file__).resolve().parent.parent / "art" / "crown.jpg"
+ART = Path(__file__).resolve().parent.parent / "art" / "crown3d.webp"   # 24-frame turntable strip, see tools/crown3d/
 rnd = random.Random(2077)
 WHITE_ICE = "#eefcff"
 
@@ -94,6 +94,11 @@ def build():
           '<feColorMatrix type="matrix" values="0 0 0 0 .55  0 0 0 0 .95  0 0 0 0 1  .9 .9 .9 0 -.18" result="h"/>'
           '<feGaussianBlur in="h" stdDeviation="5" result="b"/>'
           '<feMerge><feMergeNode in="b"/><feMergeNode in="h"/><feMergeNode in="h"/></feMerge></filter>'
+        # 3D sprite: black background -> transparent (alpha from brightness), then a soft cyan glow
+        + '<filter id="holo3d" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">'
+          '<feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  .4 1.2 1.2 0 0" result="k"/>'
+          '<feGaussianBlur in="k" stdDeviation="4" result="b"/>'
+          '<feMerge><feMergeNode in="b"/><feMergeNode in="k"/></feMerge></filter>'
         + '<filter id="holo-f2" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">'
           '<feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 .17  0 0 0 0 .84  .9 .9 .9 0 -.2"/></filter>'
         + '<pattern id="holo-scan" width="4" height="3" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="#000" opacity=".55"/></pattern>'
@@ -112,25 +117,19 @@ def build():
 
     # hologram of the White King's crown, projected from a rooftop
     data = base64.b64encode(ART.read_bytes()).decode()
-    cw = 270
-    ch = cw * 910 / 1174
-    cx0, cy0 = 960 - cw / 2, 46
-    px, py = 960, 318                      # projector on the rooftop
+    fw, fh, nfr = 280, 195, 24                 # one sprite frame; the strip holds a 72-degree turn
+    cx0, cy0 = 960 - fw / 2, 58
+    ch, cw = fh, fw
+    px, py = 960, 318                          # projector on the rooftop
     holo = (
-        f'<polygon class="cone" points="{px-6},{py} {px+6},{py} {cx0+cw-30:.0f},{cy0+ch-6:.0f} {cx0+30:.0f},{cy0+ch-6:.0f}" fill="url(#cone)"/>'
+        f'<polygon class="cone" points="{px-6},{py} {px+6},{py} {cx0+cw-40:.0f},{cy0+ch-14:.0f} {cx0+40:.0f},{cy0+ch-14:.0f}" fill="url(#cone)"/>'
         f'<rect x="{px-16}" y="{py}" width="32" height="8" fill="#0b0b14" stroke="{CYAN}" stroke-opacity=".8"/>'
         f'<circle cx="{px}" cy="{py}" r="3" fill="{CYAN}" class="blink b4" filter="url(#g-c)"/>'
-        f'<defs><image id="crw" x="{cx0:.0f}" y="{cy0}" width="{cw}" height="{ch:.0f}" href="data:image/jpeg;base64,{data}"/>'
-        f'<mask id="crm" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}"><g class="spin"><use href="#crw"/></g></mask>'
-        f'<linearGradient id="spinsheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
-        f'<stop offset=".5" stop-color="#eaffff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>'
-        f'<g class="holo">'
-        f'<g class="spin"><g filter="url(#holo-f)"><use href="#crw"/></g>'
-        f'<g class="hglitch"><g filter="url(#holo-f2)"><use href="#crw"/></g></g></g>'
-        # a band of light crossing the turning crown from right to left
-        f'<g mask="url(#crm)"><rect class="rsheen" x="{cx0 + cw:.0f}" y="{cy0}" width="70" height="{ch:.0f}" fill="url(#spinsheen)"/></g>'
-        f'</g>'
-        + T("WHITEKING.HOLO", 960, cy0 + ch + 22, "sharetechmono", 13, CYAN, 2, "middle", 'opacity=".75" class="holo"')
+        f'<clipPath id="sprclip"><rect x="{cx0:.0f}" y="{cy0}" width="{fw}" height="{fh}"/></clipPath>'
+        f'<g class="holo" filter="url(#holo3d)"><g clip-path="url(#sprclip)">'
+        f'<image class="sprite" x="{cx0:.0f}" y="{cy0}" width="{fw*nfr}" height="{fh}" preserveAspectRatio="none" '
+        f'href="data:image/webp;base64,{data}"/></g></g>'
+        + T("WHITEKING.HOLO", 960, cy0 + ch + 18, "sharetechmono", 13, CYAN, 2, "middle", 'opacity=".75" class="holo"')
     )
 
     # left text block
@@ -192,9 +191,7 @@ def build():
     .holo{animation:holo 3s ease-in-out infinite}
     .neon{animation:neon 5s infinite}@keyframes neon{0%,40%,43%,46%,100%{opacity:1}41%,45%{opacity:.25}}
     .cone{animation:cone 3s ease-in-out infinite}@keyframes cone{0%,100%{opacity:.7}50%{opacity:1}}
-    .spin{transform-box:view-box;transform-origin:960px 150px;animation:spin 9s linear infinite}
-    @keyframes spin{0.00%{transform:scaleX(1.000)}4.17%{transform:scaleX(0.966)}8.33%{transform:scaleX(0.866)}12.50%{transform:scaleX(0.707)}16.67%{transform:scaleX(0.500)}20.83%{transform:scaleX(0.259)}25.00%{transform:scaleX(0.000)}29.17%{transform:scaleX(-0.259)}33.33%{transform:scaleX(-0.500)}37.50%{transform:scaleX(-0.707)}41.67%{transform:scaleX(-0.866)}45.83%{transform:scaleX(-0.966)}50.00%{transform:scaleX(-1.000)}54.17%{transform:scaleX(-0.966)}58.33%{transform:scaleX(-0.866)}62.50%{transform:scaleX(-0.707)}66.67%{transform:scaleX(-0.500)}70.83%{transform:scaleX(-0.259)}75.00%{transform:scaleX(-0.000)}79.17%{transform:scaleX(0.259)}83.33%{transform:scaleX(0.500)}87.50%{transform:scaleX(0.707)}91.67%{transform:scaleX(0.866)}95.83%{transform:scaleX(0.966)}100.00%{transform:scaleX(1.000)}}
-    .rsheen{animation:rsheen 4.5s linear infinite}@keyframes rsheen{from{transform:translateX(0)}to{transform:translateX(-340px)}}
+    .sprite{animation:sprite 2.2s steps(24) infinite}@keyframes sprite{from{transform:translateX(0)}to{transform:translateX(-6720px)}}
     .hglitch{opacity:0;animation:hg 4.5s steps(1) infinite;mix-blend-mode:screen}
     @keyframes hg{0%,84%,100%{opacity:0;transform:none}85%{opacity:.8;transform:translate(-6px,0);clip-path:inset(20% 0 55% 0)}
       87%{opacity:.8;transform:translate(5px,0);clip-path:inset(60% 0 15% 0)}89%{opacity:0}}
