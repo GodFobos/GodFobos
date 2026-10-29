@@ -143,8 +143,11 @@ def build():
     )
     nw = text_width(name, "orbitron-900", nsize, 3)
 
-    tag = "NETRUNNER  ·  APPSEC  ·  DEVSECOPS"
-    tw = text_width(tag, "rajdhani-700", 24, 3)
+    tag = "APPSEC  ·  WEB & API SECURITY  ·  CODE REVIEW"
+    # letter-spacing chosen so the tagline is exactly as wide as the name above it
+    _w0 = text_width(tag, "rajdhani-700", 24, 0)
+    tsp = (text_width("KIRILL ALIMOV", "orbitron-900", 62, 3) - _w0) / (len(tag) - 1)
+    tw = text_width(tag, "rajdhani-700", 24, tsp)
     nchar = len(tag)
     chip1 = "RTU MIREA  ·  INFOSEC  ·  YEAR 4"
     chip2 = "STATUS: OPEN TO APPSEC INTERNSHIP"
@@ -164,7 +167,7 @@ def build():
         + f'<rect x="{nx}" y="{ny+16}" width="{nw:.0f}" height="2" fill="{YELLOW}" opacity=".35"/>'
         # the motto as a white neon sign
         + f'<g class="neon">' + T(motto, nx, ny + 54, "orbitron-900", 30, WHITE_ICE, 4, extra='filter="url(#g-w)"') + '</g>'
-        + T(tag, nx, ny + 94, "rajdhani-700", 24, CYAN, 3, extra='filter="url(#g-c)"')
+        + T(tag, nx, ny + 94, "rajdhani-700", 24, CYAN, tsp, extra='filter="url(#g-c)"')
     )
 
     # HUD bits

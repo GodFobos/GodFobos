@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/hero.svg" width="100%" alt="Kirill Alimov, netrunner WhiteKing. I'm the only king. Netrunner, AppSec, DevSecOps." />
+  <img src="./assets/hero.svg" width="100%" alt="Kirill Alimov, netrunner WhiteKing. I'm the only king. Application security, web and API security, code review." />
 
   <br/>
 
@@ -13,8 +13,8 @@
 ```console
 $ whoami
 kirill alimov  ·  aka whiteking
-appsec / devsecops  ·  4th-year infosec student @ RTU MIREA
-open to an appsec internship
+application security  ·  web & api security  ·  secure code review
+4th-year infosec student @ RTU MIREA  ·  open to an appsec internship
 ```
 
 <a name="projects"></a>
